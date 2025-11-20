@@ -1,0 +1,122 @@
+*.o
+\#*#
+*#
+.#*
+.*~
+*~
+.DS_Store
+*.sw[po]
+tags
+TAGS
+.svn
+*.dSYM
+*.log
+*.dvi
+*.aux
+*.elc
+.zshrc.local
+.python-version
+samples
+.netrwhist
+.bundle
+/vendor/bundle
+Gemfile.lock
+node_modules
+bower_components
+fishd.*
+
+# Vim
+Session.vim
+.vim/bundle/
+.vimrc_sample
+.vim/ftdetect/Dockerfile.vim
+.vim/syntax/Dockerfile.vim
+.vim/snippets/
+.luarc.json
+
+# Xcode
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+*.xcworkspace/xcshareddata
+
+# CocoaPods
+Pods/
+
+# Atom.io
+.atom/packages/save-session
+.atom/compile-cache
+.atom/storage
+
+# Fish local config
+.config/fish/config-local.fish
+.config/fish/fish_variables
+.config/fish/fish_variables.*
+.config/fish/fishd.tmp.*
+
+# Karabiner
+.config/karabiner/automatic_backups
+.config/karabiner/assets
+
+# Nvim
+.config/nvim.bak
+.config/nvim/pack
+.config/nvim/lazy-lock.json
+.config/nvim/lazyvim.json
+
+# Tmux
+.config/tmux/plugins
+
+# Yarn
+.config/yarn
+
+# Iterm2
+.config/iterm2
+
+# Github-copilot
+.config/github-copilot
+
+# Configstore
+.config/configstore
+
+# CZ-git
+.config/.czrc
+
+# Lazygit
+.config/lazygit/state.yml
+
+# Zed
+.config/zed/.tmp*
+.config/zed/embeddings
+.config/zed/prompts
+
+# Raycast
+.config/raycast/*
+
+# Claude Code - Runtime data only
+.claude/todos/
+.claude/projects/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/debug/
+.claude/file-history/
+.claude/history.jsonl
+.claude/plugins/repos/
+.claude/*.local.json
+
+# Track these configs
+!.claude/settings.json
+!.claude/plugins/config.json
