@@ -1,0 +1,73 @@
+[alias]
+
+  # View abbreviated SHA, description, and history graph of the latest 20 commits.
+  l = log --pretty=oneline -n 20 --graph --abbrev-commit
+
+  # View the current working tree status using the short format.
+	s = status -s
+
+	# Pull in remote changes for the current repository and all its submodules.
+  p = pull --recurse-submodules
+
+  # Clone a repository including all submodules.
+	c = clone --recursive
+
+	# Commit all changes.
+  ca = !git add ':(exclude,attr:builtin_objectmode=160000)' && git commit -av
+
+  # Show verbose output about tags, branches or remotes
+	tags = tag -l
+	branches = branch --all
+  remotes = remote --verbose
+
+	# List aliases.
+  aliases = config --get-regexp alias
+
+	# Remove branches that have already been merged with main.
+	# a.k.a. ‘delete merged’
+  dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
+	# List contributors with number of commits.
+	contributors = shortlog --summary --numbered
+
+[apply]
+
+	# Detect whitespace errors when applying a patch.
+  whitespace = fix
+
+[branch]
+
+	# Show most recently changed branches first.
+  sort = -committerdate
+
+[merge]
+
+	# Include summaries of merged commits in newly created merge commit messages
+  log = true
+
+[core]
+
+	# Treat spaces before tabs and all kinds of trailing whitespace as an error.
+	# [default] trailing-space: looks for spaces at the end of a line
+	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+  whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+
+  autocrlf = input
+	compression = 0
+
+[user]
+
+  name = satil
+  email = satil@bwg-io.site
+
+[url "ssh://git@gitlab.axarea.ru/"]
+
+  insteadOf = https://gitlab.axarea.ru/
+
+[url "ssh://git@gitlab.com/"]
+
+  insteadOf = https://gitlab.com/
+
+[push]
+
+  autoSetupRemote = true
