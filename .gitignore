@@ -120,3 +120,6 @@ Pods/
 # Track these configs
 !.claude/settings.json
 !.claude/plugins/config.json
+
+.idea
+.zshrc.bak

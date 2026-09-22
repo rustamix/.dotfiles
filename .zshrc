@@ -1,128 +1,113 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# ~/.zshrc — интерактивные шеллы.
+# Переменные для login-шеллов живут в ~/.zprofile (там brew shellenv).
+
+# ---------------------------------------------------------------------------
+# Homebrew
+# ---------------------------------------------------------------------------
+# .zprofile выполняется только для login-шеллов, поэтому в nested-шеллах и во
+# встроенных терминалах (nvim, Cursor) HOMEBREW_PREFIX пуст. Подстраховываемся.
+# Если .zprofile уже отработал — это no-op.
+if [[ -z $HOMEBREW_PREFIX && -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# ---------------------------------------------------------------------------
+# PATH
+# ---------------------------------------------------------------------------
+# typeset -U держит path уникальным: повторный запуск zsh больше не плодит дубли.
+typeset -U path PATH
 
-# Path to your oh-my-zsh installation.
+export GOPATH="$HOME/go"
+
+# Препендим в порядке возрастания приоритета — последний окажется первым.
+# /usr/local/go/bin убран намеренно: там go1.22.2, а реально работает
+# brew-овский go1.24.6 из /opt/homebrew/bin. Удали саму установку или верни
+# строку осознанно.
+for _dir in \
+  "$HOMEBREW_PREFIX/opt/python@3.11/libexec/bin" \
+  "$GOPATH/bin"
+do
+  [[ -d $_dir ]] && path=("$_dir" $path)
+done
+unset _dir
+
+# ---------------------------------------------------------------------------
+# oh-my-zsh
+# ---------------------------------------------------------------------------
 export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+plugins=(
+  git
+  golang
+  kubectl
+  docker
+  docker-compose
+  brew
+  macos
+)
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# Guard: dotfiles могут раскататься на машину, где omz ещё не поставлен.
+[[ -f $ZSH/oh-my-zsh.sh ]] && source "$ZSH/oh-my-zsh.sh"
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+# ---------------------------------------------------------------------------
+# История (после omz — он выставляет свои значения)
+# ---------------------------------------------------------------------------
+# omz ставит SAVEHIST=10000 при HISTSIZE=50000, то есть на диск уезжала пятая часть.
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS
 
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+# ---------------------------------------------------------------------------
+# Окружение
+# ---------------------------------------------------------------------------
+export LANG=en_US.UTF-8
+export EDITOR=nvim
+export VISUAL=nvim
 
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
+# ---------------------------------------------------------------------------
+# fzf — Ctrl-R по истории, Ctrl-T по файлам
+# ---------------------------------------------------------------------------
+if command -v fzf >/dev/null; then
+  export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+  source <(fzf --zsh)   # требует fzf >= 0.48; у тебя 0.50.0
+fi
 
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
+# ---------------------------------------------------------------------------
+# Автодополнение из истории и подсветка синтаксиса
+# ---------------------------------------------------------------------------
+# Пока не установлены — строки просто пропускаются:
+#   brew install zsh-autosuggestions zsh-syntax-highlighting
+# Порядок важен: syntax-highlighting подключается последним.
+[[ -f $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+  source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
+  source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+# ---------------------------------------------------------------------------
+# uv (файл идемпотентный, сам добавляет ~/.local/bin в начало PATH)
+# ---------------------------------------------------------------------------
+[[ -f $HOME/.local/bin/env ]] && source "$HOME/.local/bin/env"
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# ---------------------------------------------------------------------------
+# Машинно-локальное: токены, пути, всё что не должно уехать в git
+# ---------------------------------------------------------------------------
+[[ -f $HOME/.zshrc.local ]] && source "$HOME/.zshrc.local"
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
+# ---------------------------------------------------------------------------
+# powerlevel10k — сейчас выключен, активна тема robbyrussell выше
+# ---------------------------------------------------------------------------
+# ~/powerlevel10k и ~/.p10k.zsh на диске есть. Чтобы вернуть:
+#   1) ZSH_THEME="" в секции oh-my-zsh
+#   2) раскомментировать две строки ниже
+#   3) перенести блок instant prompt в САМОЕ НАЧАЛО файла
 #
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
 # source ~/powerlevel10k/powerlevel10k.zsh-theme
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# PowerLevel 10 K Configuration
-#ZSH_THEME="powerlevel10k/powerlevel10k"
-#POWERLEVEL10K_DISABLE_RPROMPT=true
-#POWERLEVEL10K_PROMPT_ON_NEWLINE=true
-#POWERLEVEL10K_MULTILINE_LAST_PROMPT_PREFIX=""
-#POWERLEVEL10K_MULTILINE_FIRST_PROMPT_PREFIX=""
-DEFAULT_USER=$USER
-
-#[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-#export FZF_DEFAULT_OPTS='--height 40% --preview "cat {}" --preview-window right:60%:wrap'
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:$GOPATH/bin
-export PATH="$(brew --prefix)/opt/python@3.11/libexec/bin:$PATH"
+#
+# Блок instant prompt (только вместе с включённым p10k, строго первым в файле):
+#
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi

@@ -61,13 +61,9 @@
   email = satil@bwg-io.site
 
 [url "ssh://git@gitlab.axarea.ru/"]
-
   insteadOf = https://gitlab.axarea.ru/
 
 [url "ssh://git@gitlab.com/"]
-
   insteadOf = https://gitlab.com/
-
 [push]
-
-  autoSetupRemote = true
+	autoSetupRemote = true
