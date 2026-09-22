@@ -87,6 +87,8 @@ cask "postman"
 cask "rectangle"
 # Messaging app with a focus on speed and security
 cask "telegram"
+# Open-source code editor
+cask "visual-studio-code"
 vscode "anthropic.claude-code"
 vscode "golang.go"
 vscode "ms-python.debugpy"
