@@ -1,0 +1,36 @@
+{
+  // ---- редактор ----
+  "editor.stickyScroll.enabled": false,
+  "editor.formatOnSave": true,
+  "workbench.editor.enablePreview": false,
+  "workbench.colorTheme": "Dark Modern",
+
+  // ---- файлы ----
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // ---- Go ----
+  // go.formatTool намеренно не задан: значение по умолчанию (default)
+  // означает "форматирует gopls". Явный goimports отключал бы его.
+  "go.lintTool": "golangci-lint",
+  "go.lintOnSave": "package",
+
+  // Тег сборки интеграционных тестов. Без него файлы с //go:build integration
+  // считаются исключёнными: серые, без навигации и диагностики.
+  // Проксируется в gopls; go.testTags при отсутствии падает сюда же.
+  "go.buildTags": "integration",
+
+  "gopls": {
+    "ui.diagnostic.staticcheck": true,
+    "ui.semanticTokens": true
+  },
+
+  "[go]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // ---- прочее ----
+  "claudeCode.preferredLocation": "panel"
+}
