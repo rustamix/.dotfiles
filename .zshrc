@@ -2,6 +2,15 @@
 # Переменные для login-шеллов живут в ~/.zprofile (там brew shellenv).
 
 # ---------------------------------------------------------------------------
+# powerlevel10k instant prompt
+# ---------------------------------------------------------------------------
+# ДОЛЖЕН оставаться в самом верху файла. Всё, что может что-то спросить у
+# пользователя (пароли, подтверждения [y/n]), обязано идти ВЫШЕ этого блока.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# ---------------------------------------------------------------------------
 # Homebrew
 # ---------------------------------------------------------------------------
 # .zprofile выполняется только для login-шеллов, поэтому в nested-шеллах и во
@@ -20,9 +29,8 @@ typeset -U path PATH
 export GOPATH="$HOME/go"
 
 # Препендим в порядке возрастания приоритета — последний окажется первым.
-# /usr/local/go/bin убран намеренно: там go1.22.2, а реально работает
-# brew-овский go1.24.6 из /opt/homebrew/bin. Удали саму установку или верни
-# строку осознанно.
+# /usr/local/go/bin тут намеренно нет: он приходит из /etc/paths.d/go, а
+# реально работает brew-овский go из /opt/homebrew/bin.
 for _dir in \
   "$HOMEBREW_PREFIX/opt/python@3.11/libexec/bin" \
   "$GOPATH/bin"
@@ -35,7 +43,9 @@ unset _dir
 # oh-my-zsh
 # ---------------------------------------------------------------------------
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="robbyrussell"
+
+# Тему задаёт powerlevel10k ниже, собственную тему omz отключаем.
+ZSH_THEME=""
 
 plugins=(
   git
@@ -49,6 +59,12 @@ plugins=(
 
 # Guard: dotfiles могут раскататься на машину, где omz ещё не поставлен.
 [[ -f $ZSH/oh-my-zsh.sh ]] && source "$ZSH/oh-my-zsh.sh"
+
+# ---------------------------------------------------------------------------
+# powerlevel10k — тема. Настройки подключаются последней строкой файла.
+# ---------------------------------------------------------------------------
+[[ -f $HOME/powerlevel10k/powerlevel10k.zsh-theme ]] && \
+  source "$HOME/powerlevel10k/powerlevel10k.zsh-theme"
 
 # ---------------------------------------------------------------------------
 # История (после omz — он выставляет свои значения)
@@ -71,14 +87,12 @@ export VISUAL=nvim
 # ---------------------------------------------------------------------------
 if command -v fzf >/dev/null; then
   export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
-  source <(fzf --zsh)   # требует fzf >= 0.48; у тебя 0.50.0
+  source <(fzf --zsh)   # требует fzf >= 0.48
 fi
 
 # ---------------------------------------------------------------------------
 # Автодополнение из истории и подсветка синтаксиса
 # ---------------------------------------------------------------------------
-# Пока не установлены — строки просто пропускаются:
-#   brew install zsh-autosuggestions zsh-syntax-highlighting
 # Порядок важен: syntax-highlighting подключается последним.
 [[ -f $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
   source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
@@ -96,18 +110,7 @@ fi
 [[ -f $HOME/.zshrc.local ]] && source "$HOME/.zshrc.local"
 
 # ---------------------------------------------------------------------------
-# powerlevel10k — сейчас выключен, активна тема robbyrussell выше
+# Настройки powerlevel10k. Перенастроить: p10k configure
+# Должно оставаться последней строкой файла.
 # ---------------------------------------------------------------------------
-# ~/powerlevel10k и ~/.p10k.zsh на диске есть. Чтобы вернуть:
-#   1) ZSH_THEME="" в секции oh-my-zsh
-#   2) раскомментировать две строки ниже
-#   3) перенести блок instant prompt в САМОЕ НАЧАЛО файла
-#
-# source ~/powerlevel10k/powerlevel10k.zsh-theme
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-#
-# Блок instant prompt (только вместе с включённым p10k, строго первым в файле):
-#
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
+[[ -f $HOME/.p10k.zsh ]] && source "$HOME/.p10k.zsh"

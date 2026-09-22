@@ -1,125 +1,86 @@
-*.o
-\#*#
-*#
-.#*
-.*~
-*~
-.DS_Store
-*.sw[po]
-tags
-TAGS
-.svn
-*.dSYM
-*.log
-*.dvi
-*.aux
-*.elc
+# Репозиторий ПУБЛИЧНЫЙ: github.com/rustamix/.dotfiles
+# Всё, что попало сюда, читает кто угодно. Правь с этой мыслью.
+
+# ---------------------------------------------------------------
+# Секреты и учётные данные — никогда
+# ---------------------------------------------------------------
+.netrc
+.pgpass
+.vault-token
+.my.cnf
+.npmrc
+.pypirc
+.env
+.env.*
+.claude.json
+.claude.json.*
+.ssh/
+.gnupg/
+.kube/
+.aws/
+.docker/
+*.pem
+*.key
+*.p12
+*.pfx
+*_rsa
+*_dsa
+*_ecdsa
+*_ed25519
+id_*
+known_hosts
+*credential*
+*secret*
+*token*
+
+# ---------------------------------------------------------------
+# Машинно-локальное — у каждой машины своё
+# ---------------------------------------------------------------
 .zshrc.local
-.python-version
-samples
-.netrwhist
-.bundle
-/vendor/bundle
-Gemfile.lock
-node_modules
-bower_components
-fishd.*
+.zprofile.local
+.gitconfig.local
 
-# Vim
-Session.vim
-.vim/bundle/
-.vimrc_sample
-.vim/ftdetect/Dockerfile.vim
-.vim/syntax/Dockerfile.vim
-.vim/snippets/
-.luarc.json
+# ---------------------------------------------------------------
+# Бэкапы, кэши, история
+# ---------------------------------------------------------------
+*.bak
+*.save
+*.orig
+*.rej
+*.swp
+*.sw[po]
+*~
+.#*
+\#*#
+.zcompdump*
+.zsh_history
+.*_history
+.viminfo
+.lesshst
+*.log
 
-# Xcode
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-*.xcworkspace/xcshareddata
+# ---------------------------------------------------------------
+# macOS / IDE
+# ---------------------------------------------------------------
+.DS_Store
+.idea/
+.vscode/
 
-# CocoaPods
-Pods/
+# ---------------------------------------------------------------
+# ~/.config — по умолчанию НЕ трекаем ничего.
+# Половина конфигов там держит токены (github-copilot, grafana-mcp,
+# opencode). Новое добавляется только явным исключением ниже.
+# ---------------------------------------------------------------
+.config/*
+!.config/git/
+.config/git/*
+!.config/git/ignore
 
-# Atom.io
-.atom/packages/save-session
-.atom/compile-cache
-.atom/storage
-
-# Fish local config
-.config/fish/config-local.fish
-.config/fish/fish_variables
-.config/fish/fish_variables.*
-.config/fish/fishd.tmp.*
-
-# Karabiner
-.config/karabiner/automatic_backups
-.config/karabiner/assets
-
-# Nvim
-.config/nvim.bak
-.config/nvim/pack
-.config/nvim/lazy-lock.json
-.config/nvim/lazyvim.json
-
-# Tmux
-.config/tmux/plugins
-
-# Yarn
-.config/yarn
-
-# Iterm2
-.config/iterm2
-
-# Github-copilot
-.config/github-copilot
-
-# Configstore
-.config/configstore
-
-# CZ-git
-.config/.czrc
-
-# Lazygit
-.config/lazygit/state.yml
-
-# Zed
-.config/zed/.tmp*
-.config/zed/embeddings
-.config/zed/prompts
-
-# Raycast
-.config/raycast/*
-
-# Claude Code - Runtime data only
-.claude/todos/
-.claude/projects/
-.claude/shell-snapshots/
-.claude/statsig/
-.claude/debug/
-.claude/file-history/
-.claude/history.jsonl
-.claude/plugins/repos/
-.claude/*.local.json
-
-# Track these configs
+# ---------------------------------------------------------------
+# ~/.claude — та же логика, трекаем только конфиги
+# ---------------------------------------------------------------
+.claude/*
 !.claude/settings.json
+!.claude/plugins/
+.claude/plugins/*
 !.claude/plugins/config.json
-
-.idea
-.zshrc.bak
